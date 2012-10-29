@@ -31,9 +31,9 @@ parede(5,10).
 
 parede(5,12).
 parede(5,13).
-parede(5,14).
+parede(5,14). parede(6,14).
 
-parede(5,16).
+parede(5,16). parede(6,16).
 parede(5,17).
 parede(5,18).
 parede(5,19).

@@ -56,20 +56,14 @@ existeParede(Direcao) :-
 
 melhorAcao(ligarHelicoptero) :- emHeliporto.
 
-melhorAcao(andar) :- 
-  direcao(right), not(existeParede(right)), heliporto(right);
-  direcao(bottom), not(existeParede(bottom)), heliporto(bottom);
-  direcao(left), not(existeParede(left)), heliporto(left);
-  direcao(up), not(existeParede(up)), heliporto(up).
+melhorAcao(andar) :-
+  direcao(X), not(existeParede(X)), heliporto(X).  
 
 melhorAcao(virar) :-
-  existeParede(up), direcao(up);
-  existeParede(right), direcao(right);
-  existeParede(bottom), direcao(bottom);
-  existeParede(left), direcao(left);
+  existeParede(X), direcao(X);
   
   % Não estamos na direcao do heliporto
-  heliporto(X), not(direcao(X)).
+  heliporto(Y), not(direcao(Y)).
 
 ligarHelicoptero:- writef("Ligando o Helicóptero! Fugiu com sucesso!").
 

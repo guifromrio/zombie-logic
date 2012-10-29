@@ -1,6 +1,7 @@
 :- dynamic zumbi/2.
 :- dynamic parede/2.
 :- dynamic em/2.
+:- dynamic visitado/2.
 :- dynamic direcao/1.
 
 not(P) :- (call(P) -> fail; true).
@@ -66,5 +67,6 @@ melhorAcao(Acao) :-
 
 ligarHelicoptero:- writef("Ligando o Helicóptero! Fugiu com sucesso!\n").
 
+visitar :- em(X,Y), assert(visitado(X,Y)), sentir(X,Y).
 status :- writef("status - "), direcao(D), em(X,Y), heliporto(H), writef("Direcao: %w, em: (%d,%d), H: %w\n", [D,X,Y,H]) -> true.
-agir :-  status, melhorAcao(A), call(A), status, em(X,Y), sentir(X,Y), writef("\n") -> true.
+agir :-  status, melhorAcao(A), call(A), status, visitar, writef("\n") -> true.

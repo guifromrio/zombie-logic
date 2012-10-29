@@ -52,21 +52,23 @@ heliporto(Direcao) :-
   em(_,Y), Y < 17, Direcao = bottom;
   em(X,_), X > 18, Direcao = left;
   em(_,Y), Y > 17, Direcao = up;
-  em(X,_), X < 18, Direcao = right.
+  em(X,_), X < 18, Direcao = right;
+  Direcao = here.
 
 existeObstaculo(Direcao) :- existeParede(Direcao); existeZumbi(Direcao).
 
 existeParede(Direcao) :- 
-  em(X,Y), YCima is Y-1, parede(X, YCima), Direcao = up -> true;
-  em(X,Y), XDireita is X+1, parede(XDireita, Y), Direcao = right -> true;
-  em(X,Y), YBaixo is Y+1, parede(X, YBaixo), Direcao = bottom -> true;
-  em(X,Y), XEsquerda is X-1, parede(XEsquerda, Y), Direcao = left -> true.
+  em(X,Y), YCima is Y-1, parede(X, YCima), Direcao = up;
+  em(X,Y), XDireita is X+1, parede(XDireita, Y), Direcao = right;
+  em(X,Y), YBaixo is Y+1, parede(X, YBaixo), Direcao = bottom;
+  em(X,Y), XEsquerda is X-1, parede(XEsquerda, Y), Direcao = left.
 
 existeZumbi(Direcao) :- 
-  em(X,Y), YCima is Y-1, zumbi(X, YCima, _), Direcao = up -> true;
-  em(X,Y), XDireita is X+1, zumbi(XDireita, Y, _), Direcao = right -> true;
-  em(X,Y), YBaixo is Y+1, zumbi(X, YBaixo, _), Direcao = bottom -> true;
-  em(X,Y), XEsquerda is X-1, zumbi(XEsquerda, Y, _), Direcao = left -> true.
+  em(X,Y), YCima is Y-1, zumbi(X, YCima, _), Direcao = up;
+  em(X,Y), XDireita is X+1, zumbi(XDireita, Y, _), Direcao = right;
+  em(X,Y), YBaixo is Y+1, zumbi(X, YBaixo, _), Direcao = bottom;
+  em(X,Y), XEsquerda is X-1, zumbi(XEsquerda, Y, _), Direcao = left;
+  em(X,Y), zumbi(X, Y, Q), Q > 0, Direcao = here.
 
 proxDirecao(D1, D2):- D1 = up -> D2 = right; D1 = right -> D2 = bottom; D1 = bottom -> D2 = left; D1 = left -> D2 = up.
 
@@ -74,12 +76,12 @@ melhorAcao(ligarHelicoptero) :- emHeliporto.
 
 melhorAcao(Acao) :-
   % Nunca continue encarando uma parede
-  existeObstaculo(X), direcao(X) -> Acao = virar, writef("Virei pois existe obstaculo na minha direcao ");
-  direcao(Y), proxDirecao(Y, D), existeObstaculo(D), not(existeObstaculo(Y)) -> Acao = andar, writef("Andei pois tem obstaculo na proxima direcao ");  
-  direcao(Y), proxDirecao(Y, D), not(existeObstaculo(D)), not(heliporto(Y)) -> Acao = virar, writef("Virei pois nao estou na direcao do heliporto e na proxima direcao nao existe obstaculo ");
-  Acao = andar.
+  existeObstaculo(X), direcao(X) -> Acao = virar, writef("Virei pois existe obstaculo na minha direcao\n");
+  direcao(Y), proxDirecao(Y, D), existeObstaculo(D), not(existeObstaculo(Y)) -> Acao = andar, writef("Andei pois tem obstaculo na proxima direcao \n");  
+  direcao(Y), proxDirecao(Y, D), not(existeObstaculo(D)), not(heliporto(Y)) -> Acao = virar, writef("Virei pois nao estou na direcao do heliporto e na proxima direcao nao existe obstaculo\n");
+  Acao = andar, writef("Andei\n").
 
+ligarHelicoptero:- writef("Ligando o Helicóptero! Fugiu com sucesso!\n").
 
-ligarHelicoptero:- writef("Ligando o Helicóptero! Fugiu com sucesso!").
-
-agir :- direcao(D1), em(X1,Y1), melhorAcao(A), call(A), direcao(D2), em(X2,Y2), writef("em: (%d,%d) %w --- melhorAcao: %w --- em (%d,%d) %w", [X1,Y1,D1,A,X2,Y2,D2]).
+status :- direcao(D), em(X,Y), heliporto(H), writef("facing: %w, em: (%d,%d), heliporto: %w\n", [D,X,Y,H]).
+agir :-  status, melhorAcao(A), call(A), status, writef("\n") -> true.

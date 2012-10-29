@@ -54,16 +54,20 @@ existeParede(Direcao) :-
   em(X,Y), YBaixo is Y+1, parede(X, YBaixo), Direcao = bottom -> true;
   em(X,Y), XEsquerda is X-1, parede(XEsquerda, Y), Direcao = left -> true.
 
+proxDirecao(D1, D2):- D1 = up -> D2 = right; D1 = right -> D2 = bottom; D1 = bottom -> D2 = left; D1 = left -> D2 = up.
+
 melhorAcao(ligarHelicoptero) :- emHeliporto.
 
-melhorAcao(andar) :-
-  direcao(X), not(existeParede(X)), heliporto(X).  
-
 melhorAcao(virar) :-
-  existeParede(X), direcao(X);
-  
+  existeParede(X), direcao(X).
+
+melhorAcao(andar) :-
+  direcao(X), not(existeParede(X)), heliporto(X);
+  not(direcao(Y)), existeParede(Y), heliporto(Y).
+
+melhorAcao(virar) :-  
   % Não estamos na direcao do heliporto
-  heliporto(Y), not(direcao(Y)).
+  heliporto(Y), not(direcao(Y)), not(existeParede(Y)).
 
 ligarHelicoptero:- writef("Ligando o Helicóptero! Fugiu com sucesso!").
 

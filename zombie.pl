@@ -6,13 +6,28 @@
 not(P) :- (call(P) -> fail; true).
 direcao(up).
 em(4,3).
+
+parede(5,2).
 parede(5,3).
 parede(5,4).
 parede(5,5).
 parede(5,6).
+
 parede(5,8).
 parede(5,9).
 parede(5,10).
+
+parede(5,12).
+parede(5,13).
+parede(5,14).
+
+parede(5,16).
+parede(5,17).
+parede(5,18).
+parede(5,19).
+
+parede(5,21).
+
 emHeliporto :- em(18,17).
 
 virar :- 
@@ -27,10 +42,11 @@ andar :-
   direcao(bottom), em(X,Y) -> retract(em(X,Y)), NewY is Y + 1, assert(em(X,NewY));
   direcao(left), em(X,Y) -> retract(em(X,Y)), NewX is X - 1, assert(em(NewX,Y)).
 
-acimaHeliporto :- em(_,Y), Y < 17.
-aDireitaHeliporto :- em(X,_), X > 18.
-aEsquerdaHeliporto :- em(X,_), X < 18.
-abaixoHeliporto :- em(_,Y), Y > 17.
+heliporto(Direcao) :-
+  em(_,Y), Y < 17, Direcao = bottom;
+  em(X,_), X > 18, Direcao = left;
+  em(_,Y), Y > 17, Direcao = up;
+  em(X,_), X < 18, Direcao = right.
 
 existeParede(Direcao) :- 
   em(X,Y), YCima is Y-1, parede(X, YCima), Direcao = up -> true;
@@ -41,32 +57,19 @@ existeParede(Direcao) :-
 melhorAcao(ligarHelicoptero) :- emHeliporto.
 
 melhorAcao(andar) :- 
-  not(emHeliporto), direcao(right), not(existeParede(right)), aEsquerdaHeliporto;
-  not(emHeliporto), direcao(bottom), not(existeParede(bottom)), acimaHeliporto;
-  not(emHeliporto), direcao(left), not(existeParede(left)), aDireitaHeliporto;
-  not(emHeliporto), direcao(up), not(existeParede(up)), abaixoHeliporto.
+  direcao(right), not(existeParede(right)), heliporto(right);
+  direcao(bottom), not(existeParede(bottom)), heliporto(bottom);
+  direcao(left), not(existeParede(left)), heliporto(left);
+  direcao(up), not(existeParede(up)), heliporto(up).
 
 melhorAcao(virar) :-
-  not(emHeliporto), existeParede(up), direcao(up);
-  not(emHeliporto), existeParede(right), direcao(right);
-  not(emHeliporto), existeParede(bottom), direcao(bottom);
-  not(emHeliporto), existeParede(left), direcao(left);
-
-  not(emHeliporto), acimaHeliporto, direcao(left);
-  not(emHeliporto), acimaHeliporto, direcao(up);
-  not(emHeliporto), acimaHeliporto, direcao(right);
-
-  not(emHeliporto), aDireitaHeliporto, direcao(up);
-  not(emHeliporto), aDireitaHeliporto, direcao(right);
-  not(emHeliporto), aDireitaHeliporto, direcao(bottom);
-
-  not(emHeliporto), aEsquerdaHeliporto, direcao(bottom);
-  not(emHeliporto), aEsquerdaHeliporto, direcao(left);
-  not(emHeliporto), aEsquerdaHeliporto, direcao(up);
-
-  not(emHeliporto), abaixoHeliporto, direcao(right);
-  not(emHeliporto), abaixoHeliporto, direcao(bottom);
-  not(emHeliporto), abaixoHeliporto, direcao(left).
+  existeParede(up), direcao(up);
+  existeParede(right), direcao(right);
+  existeParede(bottom), direcao(bottom);
+  existeParede(left), direcao(left);
+  
+  % Não estamos na direcao do heliporto
+  heliporto(X), not(direcao(X)).
 
 ligarHelicoptero:- writef("Ligando o Helicóptero! Fugiu com sucesso!").
 

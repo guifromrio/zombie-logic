@@ -4,7 +4,7 @@
 :- dynamic direcao/1.
 
 not(P) :- (call(P) -> fail; true).
-direcao(up).
+direcao(right).
 em(4,3).
 
 parede(5,2).
@@ -58,16 +58,13 @@ proxDirecao(D1, D2):- D1 = up -> D2 = right; D1 = right -> D2 = bottom; D1 = bot
 
 melhorAcao(ligarHelicoptero) :- emHeliporto.
 
-melhorAcao(virar) :-
-  existeParede(X), direcao(X).
+melhorAcao(Acao) :-
+  % Nunca continue encarando uma parede
+  existeParede(X), direcao(X) -> Acao = virar, writef("Virei pois existe parede na minha direcao ");
+  direcao(Y), proxDirecao(Y, D), existeParede(D), not(existeParede(Y)) -> Acao = andar, writef("Andei pois tem parede na proxima direcao ");  
+  direcao(Y), proxDirecao(Y, D), not(existeParede(D)), not(heliporto(Y)) -> Acao = virar, writef("Virei pois nao estou na direcao do heliporto e na proxima direcao nao existe parede ");
+  Acao = andar.
 
-melhorAcao(andar) :-
-  direcao(X), not(existeParede(X)), heliporto(X);
-  not(direcao(Y)), existeParede(Y), heliporto(Y).
-
-melhorAcao(virar) :-  
-  % Não estamos na direcao do heliporto
-  heliporto(Y), not(direcao(Y)), not(existeParede(Y)).
 
 ligarHelicoptero:- writef("Ligando o Helicóptero! Fugiu com sucesso!").
 

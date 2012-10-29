@@ -1,38 +1,19 @@
-:- dynamic zumbi/3.
+:- dynamic zumbi/2.
 :- dynamic parede/2.
 :- dynamic em/2.
 :- dynamic direcao/1.
+
+:- ['paredes.pl'].
 
 not(P) :- (call(P) -> fail; true).
 direcao(right).
 em(4,3).
 
-parede(5,2).
-parede(5,3).
-parede(5,4).
-parede(5,5).
-parede(5,6).
-
-parede(5,8).
-parede(5,9).
-parede(5,10).
-
-parede(5,12).
-parede(5,13).
-parede(5,14).
-
-parede(5,16).
-parede(5,17).
-parede(5,18).
-parede(5,19).
-
-parede(5,21).
-
-sentirZumbi(Direcao, Quantidade) :- 
-  em(X,Y), YCima is Y-1, assert(zumbi(X, YCima, Quantidade)), Direcao = up -> true;
-  em(X,Y), XDireita is X+1, assert(zumbi(XDireita, Y, Quantidade)), Direcao = right -> true;
-  em(X,Y), YBaixo is Y+1, assert(zumbi(X, YBaixo, Quantidade)), Direcao = bottom -> true;
-  em(X,Y), XEsquerda is X-1, assert(zumbi(XEsquerda, Y, Quantidade)), Direcao = left -> true.
+sentirZumbi(Direcao) :- 
+  Direcao = up -> em(X,Y), YCima is Y-1, assert(zumbi(X, YCima));
+  Direcao = right -> em(X,Y), XDireita is X+1, assert(zumbi(XDireita, Y));
+  Direcao = bottom -> em(X,Y), YBaixo is Y+1, assert(zumbi(X, YBaixo));
+  Direcao = left -> em(X,Y), XEsquerda is X-1, assert(zumbi(XEsquerda, Y)).
 
 emHeliporto :- em(18,17).
 
@@ -64,11 +45,11 @@ existeParede(Direcao) :-
   em(X,Y), XEsquerda is X-1, parede(XEsquerda, Y), Direcao = left.
 
 existeZumbi(Direcao) :- 
-  em(X,Y), YCima is Y-1, zumbi(X, YCima, _), Direcao = up;
-  em(X,Y), XDireita is X+1, zumbi(XDireita, Y, _), Direcao = right;
-  em(X,Y), YBaixo is Y+1, zumbi(X, YBaixo, _), Direcao = bottom;
-  em(X,Y), XEsquerda is X-1, zumbi(XEsquerda, Y, _), Direcao = left;
-  em(X,Y), zumbi(X, Y, Q), Q > 0, Direcao = here.
+  em(X,Y), YCima is Y-1, zumbi(X, YCima), Direcao = up;
+  em(X,Y), XDireita is X+1, zumbi(XDireita, Y), Direcao = right;
+  em(X,Y), YBaixo is Y+1, zumbi(X, YBaixo), Direcao = bottom;
+  em(X,Y), XEsquerda is X-1, zumbi(XEsquerda, Y), Direcao = left;
+  em(X,Y), zumbi(X, Y), Direcao = here.
 
 proxDirecao(D1, D2):- D1 = up -> D2 = right; D1 = right -> D2 = bottom; D1 = bottom -> D2 = left; D1 = left -> D2 = up.
 
@@ -83,5 +64,5 @@ melhorAcao(Acao) :-
 
 ligarHelicoptero:- writef("Ligando o Helicóptero! Fugiu com sucesso!\n").
 
-status :- direcao(D), em(X,Y), heliporto(H), writef("facing: %w, em: (%d,%d), heliporto: %w\n", [D,X,Y,H]).
+status :- writef("status - "), direcao(D), em(X,Y), heliporto(H), writef("Direcao: %w, em: (%d,%d), H: %w\n", [D,X,Y,H]) -> true.
 agir :-  status, melhorAcao(A), call(A), status, writef("\n") -> true.

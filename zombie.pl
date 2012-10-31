@@ -60,9 +60,12 @@ melhorAcao(ligarHelicoptero) :- emHeliporto.
 
 melhorAcao(Acao) :-
   % Nunca continue encarando uma parede
-  existeObstaculo(X), direcao(X) -> Acao = virar, writef("Virei pois existe obstaculo na minha direcao\n");
-  direcao(Y), proxDirecao(Y, D), existeObstaculo(D), not(existeObstaculo(Y)) -> Acao = andar, writef("Andei pois tem obstaculo na proxima direcao \n");  
-  direcao(Y), proxDirecao(Y, D), not(existeObstaculo(D)), not(heliporto(Y)) -> Acao = virar, writef("Virei pois nao estou na direcao do heliporto e na proxima direcao nao existe obstaculo\n");
+  existeObstaculo(X), direcao(X) -> Acao = virar, 
+    writef("Virei pois existe obstaculo na minha direcao\n");
+  direcao(Y), proxDirecao(Y, D), existeObstaculo(D), not(existeObstaculo(Y)) -> Acao = andar, 
+    writef("Andei pois tem obstaculo na proxima direcao \n");  
+  direcao(Y), proxDirecao(Y, D), not(existeObstaculo(D)), not(heliporto(Y)) -> Acao = virar, 
+    writef("Virei pois nao estou na direcao do heliporto e na proxima direcao nao existe obstaculo\n");
   Acao = andar, writef("Andei\n").
 
 ligarHelicoptero:- writef("Ligando o Helicóptero! Fugiu com sucesso!\n").
